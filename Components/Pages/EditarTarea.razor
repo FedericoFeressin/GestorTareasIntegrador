@@ -1,0 +1,111 @@
+@page "/editar-tarea/{Id:int}"
+@inject TareasState State
+@inject ITareaService TareaService
+@inject ICategoriaService CategoriaService
+@inject NavigationManager Nav
+
+<h1>Editar Tarea</h1>
+
+@if (tarea is null && !notFound)
+{
+    <div class="spinner-border text-primary"></div>
+}
+else if (notFound)
+{
+    <p class="text-danger">@(mensajeError ?? "No se encontró la tarea solicitada.")</p>
+    <a href="/tareas" class="btn btn-outline-secondary">Volver</a>
+}
+else
+{
+    <EditForm Model="tarea" OnValidSubmit="Guardar" class="row g-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="col-12">
+            <label class="form-label">Título</label>
+            <InputText @bind-Value="tarea!.Titulo" class="form-control" />
+            <ValidationMessage For="() => tarea!.Titulo" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Descripción</label>
+            <InputTextArea @bind-Value="tarea!.Descripcion" class="form-control" rows="3" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Prioridad</label>
+            <InputSelect @bind-Value="tarea!.Prioridad" class="form-select">
+                <option value="Alta">Alta</option>
+                <option value="Media">Media</option>
+                <option value="Baja">Baja</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Fecha de vencimiento</label>
+            <InputDate @bind-Value="tarea!.FechaVencimiento" class="form-control" />
+            <ValidationMessage For="() => tarea!.FechaVencimiento" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Categoría</label>
+            <InputSelect @bind-Value="tarea!.CategoriaId" class="form-select">
+                <option value="">Sin categoría</option>
+                @foreach (var c in categorias)
+                {
+                    <option value="@c.Id">@c.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="col-12">
+            <InputCheckbox @bind-Value="tarea!.Completada" id="completada" class="form-check-input" />
+            <label for="completada" class="form-check-label ms-1">Completada</label>
+        </div>
+
+        <AlertError Mensaje="@mensajeError" OnCerrar="() => mensajeError = null" />
+
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar cambios</button>
+            <a href="/tareas" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private TareaEntity? tarea;
+    private List<CategoriaEntity> categorias = new();
+    private string? mensajeError;
+    private bool notFound;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categorias = await CategoriaService.ObtenerTodas();
+            tarea = await TareaService.ObtenerPorId(Id);
+            notFound = tarea is null;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"No se pudo cargar la tarea: {ex.Message}";
+            notFound = true;
+        }
+    }
+
+    private async Task Guardar()
+    {
+        mensajeError = null;
+        try
+        {
+            await State.ActualizarAsync(tarea!);
+            Nav.NavigateTo("/tareas");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"No se pudo actualizar la tarea: {ex.Message}";
+        }
+    }
+}

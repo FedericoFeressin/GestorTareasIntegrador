@@ -1,0 +1,51 @@
+<article class="card mb-3 border-0 shadow-sm tarea-card @(Tarea.Completada ? "completada" : "")"
+         style="--color-prioridad: @ColorPorPrioridad(Tarea.Prioridad)">
+    <div class="card-body">
+        <header class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+                <h5 class="card-title mb-1">@Tarea.Titulo</h5>
+                @if (!string.IsNullOrWhiteSpace(Tarea.Descripcion))
+                {
+                    <p class="card-text text-muted small mb-1">@Tarea.Descripcion</p>
+                }
+                <p class="card-text small text-muted mb-0">
+                    <i class="bi bi-calendar-event"></i>
+                    Vence: @(Tarea.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "sin fecha")
+                    @if (Tarea.Categoria is not null)
+                    {
+                        <span class="badge bg-secondary ms-2">@Tarea.Categoria.Nombre</span>
+                    }
+                </p>
+            </div>
+            <span class="badge bg-prioridad">@Tarea.Prioridad</span>
+        </header>
+    </div>
+    <div class="card-footer d-flex flex-wrap gap-2 bg-transparent border-top-0">
+        <button class="btn btn-sm btn-outline-success" @onclick="() => OnCompletar.InvokeAsync(Tarea.Id)">
+            <i class="bi @(Tarea.Completada ? "bi-arrow-counterclockwise" : "bi-check2")"></i>
+            @(Tarea.Completada ? "Reabrir" : "Completar")
+        </button>
+        <a class="btn btn-sm btn-outline-primary" href="@($"/editar-tarea/{Tarea.Id}")">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a class="btn btn-sm btn-outline-secondary" href="@($"/tarea/{Tarea.Id}")">
+            <i class="bi bi-eye"></i> Detalle
+        </a>
+        <button class="btn btn-sm btn-outline-danger" @onclick="() => OnEliminar.InvokeAsync(Tarea.Id)">
+            <i class="bi bi-trash"></i> Eliminar
+        </button>
+    </div>
+</article>
+
+@code {
+    [Parameter] public TareaEntity Tarea { get; set; } = default!;
+    [Parameter] public EventCallback<int> OnEliminar { get; set; }
+    [Parameter] public EventCallback<int> OnCompletar { get; set; }
+
+    private string ColorPorPrioridad(string p) => p switch
+    {
+        "Alta" => "#dc3545",
+        "Media" => "#fd7e14",
+        _ => "#28a745"
+    };
+}

@@ -1,0 +1,39 @@
+:root {
+    --color-primario: #0d6efd;
+    --color-fondo: #f8f9fa;
+    --color-texto: #212529;
+    --radio-borde: 8px;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    transition: background-color .2s ease, color .2s ease;
+}
+
+/* Modo oscuro persistido vía localStorage (JS Interop) */
+body.dark-mode {
+    --color-fondo: #121417;
+    --color-texto: #e9ecef;
+    background-color: #121417;
+}
+
+body.dark-mode .card,
+body.dark-mode .navbar.bg-dark {
+    background-color: #3b485c;
+    color: #e9ecef;
+}
+
+body.dark-mode .card-footer {
+    background-color: transparent;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #23262b;
+    color: #e9ecef;
+    border-color: #3a3f47;
+}
+
+/* Mobile-first: en pantallas chicas todo apila a una columna por defecto,
+   Bootstrap Grid se encarga de expandir a 2-3 columnas en md/lg/xxl. */

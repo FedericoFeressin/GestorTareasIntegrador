@@ -1,0 +1,41 @@
+@if (Estadisticas is not null)
+{
+    <section class="row g-3 mb-4" aria-label="Estadísticas de tareas">
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm stat-card">
+                <div class="card-body">
+                    <div class="stat-number">@Estadisticas.Total</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm stat-card stat-success">
+                <div class="card-body">
+                    <div class="stat-number">@Estadisticas.Completadas</div>
+                    <div class="stat-label">Completadas</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm stat-card stat-warning">
+                <div class="card-body">
+                    <div class="stat-number">@Estadisticas.Pendientes</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-0 shadow-sm stat-card stat-danger">
+                <div class="card-body">
+                    <div class="stat-number">@Estadisticas.Altas</div>
+                    <div class="stat-label">Prioridad alta</div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter] public EstadisticasDto? Estadisticas { get; set; }
+}

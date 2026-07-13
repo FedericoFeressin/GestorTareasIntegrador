@@ -1,0 +1,96 @@
+@page "/nueva-tarea"
+@inject TareasState State
+@inject ICategoriaService CategoriaService
+@inject NavigationManager Nav
+
+<h1>Nueva Tarea</h1>
+
+<EditForm Model="nuevaTarea" OnValidSubmit="Guardar" class="row g-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="col-12">
+        <label class="form-label">Título</label>
+        <InputText @bind-Value="nuevaTarea.Titulo" class="form-control" />
+        <ValidationMessage For="() => nuevaTarea.Titulo" />
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Descripción</label>
+        <InputTextArea @bind-Value="nuevaTarea.Descripcion" class="form-control" rows="3" />
+        <ValidationMessage For="() => nuevaTarea.Descripcion" />
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Prioridad</label>
+        <InputSelect @bind-Value="nuevaTarea.Prioridad" class="form-select">
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+        </InputSelect>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Fecha de vencimiento</label>
+        <InputDate @bind-Value="nuevaTarea.FechaVencimiento" class="form-control" />
+        <ValidationMessage For="() => nuevaTarea.FechaVencimiento" />
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Categoría</label>
+        <InputSelect @bind-Value="nuevaTarea.CategoriaId" class="form-select">
+            <option value="">Sin categoría</option>
+            @foreach (var c in categorias)
+            {
+                <option value="@c.Id">@c.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+
+    <AlertError Mensaje="@mensajeError" OnCerrar="() => mensajeError = null" />
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-success" disabled="@guardando">
+            <i class="bi bi-save"></i> Guardar
+        </button>
+        <a href="/tareas" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</EditForm>
+
+@code {
+    private TareaEntity nuevaTarea = new() { FechaVencimiento = DateTime.Today.AddDays(3) };
+    private List<CategoriaEntity> categorias = new();
+    private string? mensajeError;
+    private bool guardando;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categorias = await CategoriaService.ObtenerTodas();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"No se pudieron cargar las categorías: {ex.Message}";
+        }
+    }
+
+    private async Task Guardar()
+    {
+        guardando = true;
+        mensajeError = null;
+        try
+        {
+            await State.CrearAsync(nuevaTarea);
+            Nav.NavigateTo("/tareas");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"No se pudo guardar la tarea: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+}

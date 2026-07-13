@@ -1,0 +1,26 @@
+@* Modal de confirmación implementado en HTML+CSS puro, sin depender del
+   plugin JS de Bootstrap (Unidad 2, requisito de mini-proyecto). *@
+@if (Visible)
+{
+    <div class="confirm-backdrop" @onclick="Cancelar">
+        <div class="confirm-modal" @onclick:stopPropagation="true" role="dialog" aria-modal="true" aria-label="@Titulo">
+            <h5>@Titulo</h5>
+            <p>@Mensaje</p>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+                <button class="btn btn-danger" @onclick="Confirmar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string Titulo { get; set; } = "Confirmar";
+    [Parameter] public string Mensaje { get; set; } = "¿Estás seguro?";
+    [Parameter] public EventCallback OnConfirmar { get; set; }
+    [Parameter] public EventCallback OnCancelar { get; set; }
+
+    private Task Confirmar() => OnConfirmar.InvokeAsync();
+    private Task Cancelar() => OnCancelar.InvokeAsync();
+}

@@ -1,0 +1,19 @@
+.stat-card {
+    border-radius: var(--radio-borde, 8px);
+}
+
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: .8rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    letter-spacing: .04em;
+}
+
+.stat-success .stat-number { color: #198754; }
+.stat-warning .stat-number { color: #fd7e14; }
+.stat-danger .stat-number { color: #dc3545; }

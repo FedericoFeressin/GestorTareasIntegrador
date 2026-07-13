@@ -1,0 +1,12 @@
+@if (!string.IsNullOrWhiteSpace(Mensaje))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> @Mensaje
+        <button type="button" class="btn-close" aria-label="Cerrar" @onclick="() => OnCerrar.InvokeAsync()"></button>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Mensaje { get; set; }
+    [Parameter] public EventCallback OnCerrar { get; set; }
+}

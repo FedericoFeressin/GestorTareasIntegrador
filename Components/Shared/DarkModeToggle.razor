@@ -1,0 +1,41 @@
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<button class="btn btn-outline-light btn-sm" @onclick="Alternar" title="Alternar modo oscuro">
+    <i class="bi @(esOscuro ? "bi-sun" : "bi-moon-stars")"></i>
+</button>
+
+@code {
+    private IJSObjectReference? _modulo;
+    private bool esOscuro;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _modulo = await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
+            esOscuro = await _modulo.InvokeAsync<bool>("obtenerPreferenciaOscura");
+            await _modulo.InvokeVoidAsync("aplicarModoOscuro", esOscuro);
+            StateHasChanged();
+        }
+    }
+
+    private async Task Alternar()
+    {
+        esOscuro = !esOscuro;
+        if (_modulo is not null)
+        {
+            await _modulo.InvokeVoidAsync("guardarPreferenciaOscura", esOscuro);
+            await _modulo.InvokeVoidAsync("aplicarModoOscuro", esOscuro);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_modulo is not null)
+        {
+            try { await _modulo.DisposeAsync(); }
+            catch (JSDisconnectedException) { /* el circuito ya se cerró */ }
+        }
+    }
+}

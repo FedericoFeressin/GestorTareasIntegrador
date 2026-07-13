@@ -1,0 +1,152 @@
+@page "/"
+@page "/tareas"
+@page "/tareas/{FiltroEstado}"
+@implements IDisposable
+@inject TareasState State
+
+<h1>Listado de Tareas</h1>
+
+<EstadisticasBar Estadisticas="estadisticas" />
+
+<FiltroTareas Busqueda="@busqueda" Prioridad="@filtroPrioridad"
+              BusquedaChanged="OnBusquedaChanged"
+              PrioridadChanged="OnPrioridadChanged"
+              OnLimpiar="LimpiarFiltros" />
+
+<AlertError Mensaje="@mensajeError" OnCerrar="() => mensajeError = null" />
+
+@if (isLoading)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+else if (resultado is not null && resultado.Items.Count == 0)
+{
+    <p class="text-muted">No se encontraron tareas con los filtros actuales.</p>
+}
+else if (resultado is not null)
+{
+    <div class="row">
+        @foreach (var t in resultado.Items)
+        {
+            <div class="col-12 col-lg-6 col-xxl-4">
+                <TareaItem Tarea="t" OnEliminar="PedirEliminar" OnCompletar="Completar" />
+            </div>
+        }
+    </div>
+
+    <Paginacion PaginaActual="resultado.PaginaActual" TotalPaginas="resultado.TotalPaginas" OnCambio="CambiarPagina" />
+}
+
+<ConfirmDialog Visible="mostrarConfirmacion"
+               Titulo="Eliminar tarea"
+               Mensaje="Esta acción no se puede deshacer. ¿Confirmás la eliminación?"
+               OnConfirmar="ConfirmarEliminacion"
+               OnCancelar="() => mostrarConfirmacion = false" />
+
+@code {
+    [Parameter] public string? FiltroEstado { get; set; }
+
+    private PagedResult<TareaEntity>? resultado;
+    private EstadisticasDto? estadisticas;
+    private bool isLoading = true;
+    private string? mensajeError;
+    private string busqueda = string.Empty;
+    private string filtroPrioridad = "todas";
+    private int pagina = 1;
+    private const int TamanioPagina = 6;
+    private bool mostrarConfirmacion;
+    private int? idPendienteEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.OnChange += AlCambiarEstado;
+        await Cargar();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pagina = 1;
+        await Cargar();
+    }
+
+    private async Task Cargar()
+    {
+        isLoading = true;
+        mensajeError = null;
+        try
+        {
+            resultado = await State.CargarAsync(pagina, TamanioPagina, FiltroEstado, filtroPrioridad, busqueda);
+            estadisticas = await State.ObtenerEstadisticasAsync();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar las tareas: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void AlCambiarEstado() => InvokeAsync(async () =>
+    {
+        await Cargar();
+        StateHasChanged();
+    });
+
+    private async Task OnBusquedaChanged(string valor)
+    {
+        busqueda = valor;
+        pagina = 1;
+        await Cargar();
+    }
+
+    private async Task OnPrioridadChanged(string valor)
+    {
+        filtroPrioridad = valor;
+        pagina = 1;
+        await Cargar();
+    }
+
+    private async Task LimpiarFiltros()
+    {
+        busqueda = string.Empty;
+        filtroPrioridad = "todas";
+        pagina = 1;
+        await Cargar();
+    }
+
+    private async Task CambiarPagina(int nuevaPagina)
+    {
+        pagina = nuevaPagina;
+        await Cargar();
+    }
+
+    private async Task Completar(int id)
+    {
+        try { await State.ToggleCompletarAsync(id); }
+        catch { mensajeError = "No se pudo actualizar la tarea."; }
+    }
+
+    private void PedirEliminar(int id)
+    {
+        idPendienteEliminar = id;
+        mostrarConfirmacion = true;
+    }
+
+    private async Task ConfirmarEliminacion()
+    {
+        mostrarConfirmacion = false;
+        if (idPendienteEliminar is int id)
+        {
+            try { await State.EliminarAsync(id); }
+            catch { mensajeError = "No se pudo eliminar la tarea."; }
+        }
+    }
+
+    public void Dispose() => State.OnChange -= AlCambiarEstado;
+}

@@ -1,0 +1,15 @@
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <main class="container py-5">
+                <h1>404</h1>
+                <p>La página que buscás no existe.</p>
+                <a href="/tareas" class="btn btn-primary">Volver al listado</a>
+            </main>
+        </LayoutView>
+    </NotFound>
+</Router>

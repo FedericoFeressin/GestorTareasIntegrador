@@ -1,0 +1,64 @@
+@page "/tarea/{Id:int}"
+@implements IAsyncDisposable
+@inject ITareaService TareaService
+@inject IJSRuntime JS
+
+<h1>Detalle de Tarea</h1>
+
+@if (tarea is null)
+{
+    <p class="text-muted">Cargando...</p>
+}
+else
+{
+    <article class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">@tarea.Titulo</h2>
+            <p class="card-text">@tarea.Descripcion</p>
+            <ul class="list-unstyled small text-muted">
+                <li><i class="bi bi-flag"></i> Prioridad: @tarea.Prioridad</li>
+                <li><i class="bi bi-calendar-event"></i> Vence: @(tarea.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "sin fecha")</li>
+                <li><i class="bi bi-tag"></i> Categoría: @(tarea.Categoria?.Nombre ?? "sin categoría")</li>
+                <li>
+                    <i class="bi @(tarea.Completada ? "bi-check-circle-fill text-success" : "bi-hourglass-split")"></i>
+                    @(tarea.Completada ? "Completada" : "Pendiente")
+                </li>
+            </ul>
+            <button class="btn btn-outline-primary btn-sm" @onclick="CopiarEnlace">
+                <i class="bi bi-link-45deg"></i> Copiar enlace
+            </button>
+            @if (copiado)
+            {
+                <span class="text-success ms-2 small">¡Copiado!</span>
+            }
+        </div>
+    </article>
+    <a href="/tareas" class="btn btn-outline-secondary mt-3">Volver al listado</a>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private TareaEntity? tarea;
+    private IJSObjectReference? _modulo;
+    private bool copiado;
+
+    protected override async Task OnInitializedAsync()
+        => tarea = await TareaService.ObtenerPorId(Id);
+
+    private async Task CopiarEnlace()
+    {
+        _modulo ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
+        var url = $"/tarea/{Id}";
+        await _modulo.InvokeVoidAsync("copiarAlPortapapeles", url);
+        copiado = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_modulo is not null)
+        {
+            try { await _modulo.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+    }
+}

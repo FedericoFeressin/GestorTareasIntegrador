@@ -1,0 +1,17 @@
+@inherits LayoutComponentBase
+
+<div>
+    <header class="mb-4 border-bottom pb-3 p-x-2">
+        <NavMenu />
+    </header>
+
+    <main class="flex-grow-1">
+        <article aria-live="polite">
+            @Body
+        </article>
+    </main>
+
+    <footer class="text-center mt-4 pt-4 border-top">
+        <p>Gestor de Tareas &copy; @DateTime.Now.Year — Proyecto Integrador Blazor</p>
+    </footer>
+</div>

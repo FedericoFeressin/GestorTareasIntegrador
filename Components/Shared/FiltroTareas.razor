@@ -1,0 +1,35 @@
+<section class="row g-2 mb-3 align-items-end" aria-label="Filtros de búsqueda">
+    <div class="col-12 col-md-5">
+        <label for="busqueda" class="form-label small">Buscar por título</label>
+        <input id="busqueda" class="form-control" placeholder="Escribí para buscar..."
+               value="@Busqueda" @oninput="OnBusquedaInput" />
+    </div>
+    <div class="col-7 col-md-4">
+        <label for="filtroPrioridad" class="form-label small">Prioridad</label>
+        <select id="filtroPrioridad" class="form-select" value="@Prioridad" @onchange="OnPrioridadChange">
+            <option value="todas">Todas</option>
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+        </select>
+    </div>
+    <div class="col-5 col-md-3">
+        <button class="btn btn-outline-secondary w-100" @onclick="OnLimpiar">
+            <i class="bi bi-x-circle"></i> Limpiar
+        </button>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string? Busqueda { get; set; }
+    [Parameter] public string? Prioridad { get; set; }
+    [Parameter] public EventCallback<string> BusquedaChanged { get; set; }
+    [Parameter] public EventCallback<string> PrioridadChanged { get; set; }
+    [Parameter] public EventCallback OnLimpiar { get; set; }
+
+    private async Task OnBusquedaInput(ChangeEventArgs e)
+        => await BusquedaChanged.InvokeAsync(e.Value?.ToString() ?? string.Empty);
+
+    private async Task OnPrioridadChange(ChangeEventArgs e)
+        => await PrioridadChanged.InvokeAsync(e.Value?.ToString() ?? "todas");
+}

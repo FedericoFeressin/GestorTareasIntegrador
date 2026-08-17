@@ -35,5 +35,110 @@ body.dark-mode .form-select {
     border-color: #3a3f47;
 }
 
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #e9ecef;
+}
+
+body.dark-mode .text-muted,
+body.dark-mode .stat-label {
+    color: #ced4da !important;
+}
+
+body.dark-mode .card .text-muted {
+    color: #dee2e6 !important;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #ced4da !important;
+    border-color: #6c757d !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover,
+body.dark-mode .btn-outline-secondary:focus {
+    background-color: #4a5060;
+    color: #fff !important;
+    border-color: #adb5bd !important;
+}
+
+body.dark-mode .btn-outline-primary {
+    color: #7baaf7 !important;
+    border-color: #4d8bf5 !important;
+}
+
+body.dark-mode .btn-outline-primary:hover,
+body.dark-mode .btn-outline-primary:focus {
+    background-color: #1a5fc9;
+    color: #fff !important;
+}
+
+body.dark-mode .btn-outline-success {
+    color: #5fd88a !important;
+    border-color: #2ea44f !important;
+}
+
+body.dark-mode .btn-outline-success:hover,
+body.dark-mode .btn-outline-success:focus {
+    background-color: #22863a;
+    color: #fff !important;
+}
+
+body.dark-mode .btn-outline-danger {
+    color: #f08080 !important;
+    border-color: #c82333 !important;
+}
+
+body.dark-mode .btn-outline-danger:hover,
+body.dark-mode .btn-outline-danger:focus {
+    background-color: #a71d2a;
+    color: #fff !important;
+}
+
+body.dark-mode .form-label {
+    color: #ced4da;
+}
+
+body.dark-mode .page-link {
+    background-color: #23262b;
+    color: #e9ecef;
+    border-color: #3a3f47;
+}
+
+body.dark-mode .page-item.disabled .page-link {
+    background-color: #1a1d21;
+    color: #6c757d;
+    border-color: #3a3f47;
+}
+
+body.dark-mode .badge.bg-secondary {
+    background-color: #4a5060 !important;
+    color: #e9ecef;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1);
+}
+
+body.dark-mode footer {
+    color: #adb5bd;
+    border-color: #3a3f47;
+}
+
+body.dark-mode .border-bottom {
+    border-color: #3a3f47 !important;
+}
+
+body.dark-mode .border-top {
+    border-color: #3a3f47 !important;
+}
+
+body.dark-mode .list-unstyled li {
+    color: #ced4da;
+}
+
 /* Mobile-first: en pantallas chicas todo apila a una columna por defecto,
    Bootstrap Grid se encarga de expandir a 2-3 columnas en md/lg/xxl. */

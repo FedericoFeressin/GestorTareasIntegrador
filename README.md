@@ -8,7 +8,7 @@ materia: componentes Razor, interfaz visual con Bootstrap y JS Interop, persiste
 
 - **Frontend:** Blazor Server, plantilla "Blazor Web App" (render mode `InteractiveServer`)
 - **Backend/Datos:** Entity Framework Core 10, SQLite, patrón `IDbContextFactory`
-- **Estilos:** Bootstrap 5.3, Bootstrap Icons, CSS Isolation, variables CSS, modo oscuro
+- **Estilos:** Bootstrap 5.3 (JS + CSS), Bootstrap Icons, CSS Isolation, variables CSS, modo oscuro
 - **JS Interop:** módulo ES6 (`wwwroot/js/interop.js`) para modo oscuro persistente y portapapeles
 - **CI:** GitHub Actions (`.github/workflows/dotnet.yml`)
 
@@ -81,9 +81,11 @@ GestorTareasIntegrador/
 **Unidad 2 — Interfaz visual**
 - [x] HTML5 semántico (`header`, `nav`, `main`, `article`, `footer`) en el layout
 - [x] CSS Isolation en `TareaItem.razor.css`, `ConfirmDialog.razor.css`, `EstadisticasBar.razor.css`
-- [x] Bootstrap 5 responsive, mobile-first (`col-12 col-lg-6 col-xxl-4`)
+- [x] Bootstrap 5 responsive, mobile-first (`col-12 col-lg-6 col-xxl-4`) + JS bundle para menú
+      hamburguesa
 - [x] JS Interop con módulo ES6, `IJSObjectReference` y `DisposeAsync` (modo oscuro + portapapeles)
 - [x] Modal de confirmación sin JS de Bootstrap (HTML + CSS puro)
+- [x] Modo oscuro completo: headings, descripciones, botones, badges, paginación, labels, footer
 
 **Unidad 3 — Persistencia**
 - [x] EF Core + SQLite con `IDbContextFactory<TareasDbContext>`
@@ -96,6 +98,7 @@ GestorTareasIntegrador/
 - [x] `.gitignore` para .NET
 - [x] Workflow de GitHub Actions (`dotnet.yml`) con restore + build en cada push
 - [x] README profesional + CHANGELOG con historial de versiones
+- [x] `GUIA_USUARIO.md` + `GUIA_TECNICA.md` con documentación para usuario y evaluación
 - [ ] Deploy a Azure App Service (paso manual: crear el App Service, agregar el secret
       `AZURE_WEBAPP_PUBLISH_PROFILE` y descomentar el step de deploy en el workflow)
 

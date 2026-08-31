@@ -2,6 +2,17 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [0.4.0] - Corrección de bugs y modo oscuro
+### Arreglado
+- Menú hamburguesa no funcionaba en mobile: se agregó Bootstrap JS bundle en `App.razor`.
+- Modo oscuro incompleto: headings, descripciones, botones, badges, paginación, labels,
+  footer y bordes ahora se ven correctamente al alternar el tema.
+- Comentario TODO pendiente eliminado de `NavMenu.razor`.
+
+### Agregado
+- `GUIA_USUARIO.md` con instrucciones de uso para el usuario final.
+- `GUIA_TECNICA.md` con tabla de componentes, líneas clave y conceptos de cátedra para evaluación.
+
 ## [0.3.0] - Unidad 4
 ### Agregado
 - Workflow de GitHub Actions (`dotnet.yml`) para build automático en cada push.

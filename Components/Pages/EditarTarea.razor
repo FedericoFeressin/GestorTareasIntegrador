@@ -66,7 +66,7 @@ else
         <AlertError Mensaje="@mensajeError" OnCerrar="() => mensajeError = null" />
 
         <div class="col-12 d-flex gap-2">
-            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar cambios</button>
+            <button type="submit" class="btn btn-success" disabled="@guardando"><i class="bi bi-save"></i> Guardar cambios</button>
             <a href="/tareas" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </EditForm>
@@ -79,6 +79,7 @@ else
     private List<CategoriaEntity> categorias = new();
     private string? mensajeError;
     private bool notFound;
+    private bool guardando;
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,6 +98,7 @@ else
 
     private async Task Guardar()
     {
+        guardando = true;
         mensajeError = null;
         try
         {
@@ -106,6 +108,10 @@ else
         catch (Exception ex)
         {
             mensajeError = $"No se pudo actualizar la tarea: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
         }
     }
 }

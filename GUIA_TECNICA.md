@@ -64,7 +64,7 @@
 | `Components/Shared/EstadisticasBar.razor.css` | :1-19 | CSS Isolation - estadísticas (Clase 10) |
 | `wwwroot/js/interop.js` | :4-16 Funciones `aplicarModoOscuro`, `copiarAlPortapapeles` | JS Interop módulo ES6 (Clase 13) |
 | `Components/Shared/DarkModeToggle.razor` | :16 `InvokeAsync<IJSObjectReference>("import", ...)` | Carga dinámica de módulo JS (Clase 13) |
-| `Components/Pages/TareaDetalle.razor` | :50-52 `InvokeVoidAsync("copiarAlPortapapeles")` | Invocación de función JS (Clase 13) |
+| `Components/Pages/TareaDetalle.razor` | :50-58 `CopiarEnlace` + `Timer` autolimpieza | Invocación de función JS + UX (Clase 13) |
 
 ### Unidad 3 — Entity Framework Core
 

@@ -1,5 +1,6 @@
 @page "/tarea/{Id:int}"
 @implements IAsyncDisposable
+@using System.Threading
 @inject ITareaService TareaService
 @inject IJSRuntime JS
 
@@ -41,6 +42,7 @@ else
     private TareaEntity? tarea;
     private IJSObjectReference? _modulo;
     private bool copiado;
+    private Timer? _timer;
 
     protected override async Task OnInitializedAsync()
         => tarea = await TareaService.ObtenerPorId(Id);
@@ -51,10 +53,13 @@ else
         var url = $"/tarea/{Id}";
         await _modulo.InvokeVoidAsync("copiarAlPortapapeles", url);
         copiado = true;
+        _timer?.Dispose();
+        _timer = new Timer(_ => InvokeAsync(() => { copiado = false; StateHasChanged(); }), null, 2000, Timeout.Infinite);
     }
 
     public async ValueTask DisposeAsync()
     {
+        _timer?.Dispose();
         if (_modulo is not null)
         {
             try { await _modulo.DisposeAsync(); }

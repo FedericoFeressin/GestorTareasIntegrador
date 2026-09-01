@@ -2,6 +2,14 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [0.5.0] - Fix de UX en detalle y edición
+### Arreglado
+- El mensaje "¡Copiado!" en `TareaDetalle` ahora se oculta solo tras 2 segundos (antes quedaba
+  visible permanentemente). Se usa un `Timer` que se descarta en cada click y se libera en
+  `DisposeAsync`.
+- Botón "Guardar cambios" en `EditarTarea` ahora se deshabilita durante el guardado (doble click
+  ya no puede disparar dos updates). Misma lógica de `guardando` que ya tenía `NuevaTarea`.
+
 ## [0.4.0] - Corrección de bugs y modo oscuro
 ### Arreglado
 - Menú hamburguesa no funcionaba en mobile: se agregó Bootstrap JS bundle en `App.razor`.

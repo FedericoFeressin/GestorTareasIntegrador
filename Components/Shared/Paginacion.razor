@@ -1,7 +1,7 @@
 @if (TotalPaginas > 1)
 {
-    <nav aria-label="Paginación de tareas">
-        <ul class="pagination justify-content-center flex-wrap">
+    <nav aria-label="Paginación de tareas" class="mt-4">
+        <ul class="pagination justify-content-center flex-wrap mb-0">
             <li class="page-item @(PaginaActual == 1 ? "disabled" : "")">
                 <button class="page-link" @onclick="() => Cambiar(PaginaActual - 1)">&laquo; Anterior</button>
             </li>

@@ -1,6 +1,6 @@
-<article class="card mb-3 border-0 shadow-sm tarea-card @(Tarea.Completada ? "completada" : "")"
+<article class="card h-100 d-flex flex-column mb-3 border-0 shadow-sm tarea-card @(Tarea.Completada ? "completada" : "")"
          style="--color-prioridad: @ColorPorPrioridad(Tarea.Prioridad)">
-    <div class="card-body">
+    <div class="card-body flex-grow-1">
         <header class="d-flex justify-content-between align-items-start flex-wrap gap-2">
             <div>
                 <h5 class="card-title mb-1">@Tarea.Titulo</h5>
@@ -20,7 +20,7 @@
             <span class="badge bg-prioridad">@Tarea.Prioridad</span>
         </header>
     </div>
-    <div class="card-footer d-flex flex-wrap gap-2 bg-transparent border-top-0">
+    <div class="card-footer mt-auto d-flex flex-wrap gap-2 bg-transparent border-top-0">
         <button class="btn btn-sm btn-outline-success" @onclick="() => OnCompletar.InvokeAsync(Tarea.Id)">
             <i class="bi @(Tarea.Completada ? "bi-arrow-counterclockwise" : "bi-check2")"></i>
             @(Tarea.Completada ? "Reabrir" : "Completar")

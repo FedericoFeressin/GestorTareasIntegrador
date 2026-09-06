@@ -1,6 +1,7 @@
 :root {
-    --color-primario: #0d6efd;
-    --color-fondo: #f8f9fa;
+    --color-primario: #6366f1;
+    --color-primario-hover: #4f46e5;
+    --color-fondo: #f1f5f9;
     --color-texto: #212529;
     --radio-borde: 8px;
 }
@@ -8,19 +9,90 @@
 body {
     background-color: var(--color-fondo);
     color: var(--color-texto);
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     transition: background-color .2s ease, color .2s ease;
+}
+
+/* Paleta índigo: sobrescribe colores por defecto de Bootstrap */
+.text-primary {
+    color: var(--color-primario) !important;
+}
+
+.btn-primary {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
+}
+
+.btn-outline-primary {
+    color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: #fff;
+}
+
+.page-link {
+    color: var(--color-primario);
+}
+
+.page-link:hover {
+    color: var(--color-primario-hover);
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+a {
+    color: var(--color-primario);
+}
+
+a:hover {
+    color: var(--color-primario-hover);
+}
+
+/* Navbar con gradiente índigo */
+.navbar-primario {
+    background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, .35);
+}
+
+h1 {
+    font-weight: 600;
+    letter-spacing: -.02em;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+body.dark-mode .navbar-primario {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
 }
 
 /* Modo oscuro persistido vía localStorage (JS Interop) */
 body.dark-mode {
-    --color-fondo: #121417;
+    --color-fondo: #17151f;
     --color-texto: #e9ecef;
-    background-color: #121417;
+    background-color: #17151f;
 }
 
 body.dark-mode .card,
-body.dark-mode .navbar.bg-dark {
-    background-color: #3b485c;
+body.dark-mode .navbar-primario {
+    background-color: #28253d;
     color: #e9ecef;
 }
 
@@ -30,9 +102,9 @@ body.dark-mode .card-footer {
 
 body.dark-mode .form-control,
 body.dark-mode .form-select {
-    background-color: #23262b;
+    background-color: #211f30;
     color: #e9ecef;
-    border-color: #3a3f47;
+    border-color: #3a3657;
 }
 
 body.dark-mode h1,
@@ -60,19 +132,19 @@ body.dark-mode .btn-outline-secondary {
 
 body.dark-mode .btn-outline-secondary:hover,
 body.dark-mode .btn-outline-secondary:focus {
-    background-color: #4a5060;
+    background-color: #3f3b5c;
     color: #fff !important;
     border-color: #adb5bd !important;
 }
 
 body.dark-mode .btn-outline-primary {
-    color: #7baaf7 !important;
-    border-color: #4d8bf5 !important;
+    color: #a5b4fc !important;
+    border-color: #6366f1 !important;
 }
 
 body.dark-mode .btn-outline-primary:hover,
 body.dark-mode .btn-outline-primary:focus {
-    background-color: #1a5fc9;
+    background-color: #4f46e5;
     color: #fff !important;
 }
 
@@ -103,19 +175,19 @@ body.dark-mode .form-label {
 }
 
 body.dark-mode .page-link {
-    background-color: #23262b;
-    color: #e9ecef;
-    border-color: #3a3f47;
+    background-color: #211f30;
+    color: #a5b4fc;
+    border-color: #3a3657;
 }
 
 body.dark-mode .page-item.disabled .page-link {
-    background-color: #1a1d21;
+    background-color: #1b1926;
     color: #6c757d;
-    border-color: #3a3f47;
+    border-color: #3a3657;
 }
 
 body.dark-mode .badge.bg-secondary {
-    background-color: #4a5060 !important;
+    background-color: #3f3b5c !important;
     color: #e9ecef;
 }
 
@@ -125,15 +197,15 @@ body.dark-mode .btn-close {
 
 body.dark-mode footer {
     color: #adb5bd;
-    border-color: #3a3f47;
+    border-color: #3a3657;
 }
 
 body.dark-mode .border-bottom {
-    border-color: #3a3f47 !important;
+    border-color: #3a3657 !important;
 }
 
 body.dark-mode .border-top {
-    border-color: #3a3f47 !important;
+    border-color: #3a3657 !important;
 }
 
 body.dark-mode .list-unstyled li {

@@ -8,7 +8,8 @@ materia: componentes Razor, interfaz visual con Bootstrap y JS Interop, persiste
 
 - **Frontend:** Blazor Server, plantilla "Blazor Web App" (render mode `InteractiveServer`)
 - **Backend/Datos:** Entity Framework Core 10, SQLite, patrón `IDbContextFactory`
-- **Estilos:** Bootstrap 5.3 (JS + CSS), Bootstrap Icons, CSS Isolation, variables CSS, modo oscuro
+- **Estilos:** Bootstrap 5.3 (JS + CSS), Bootstrap Icons, CSS Isolation, variables CSS, paleta
+  índigo/violeta personalizada, fuente Inter, modo oscuro
 - **JS Interop:** módulo ES6 (`wwwroot/js/interop.js`) para modo oscuro persistente y portapapeles
 - **CI:** GitHub Actions (`.github/workflows/dotnet.yml`)
 
@@ -73,7 +74,8 @@ GestorTareasIntegrador/
 **Unidad 1 — Componentes Blazor**
 - [x] 7 componentes reutilizables y encapsulados (`TareaItem`, `Paginacion`, `AlertError`,
       `ConfirmDialog`, `EstadisticasBar`, `FiltroTareas`, `DarkModeToggle`)
-- [x] `EditForm` + `DataAnnotationsValidator` + validación cruzada con `IValidatableObject`
+- [x] `EditForm` + `DataAnnotationsValidator` + validación cruzada con `IValidatableObject`,
+      prioridad validada con `RegularExpression` y título sin espacios en blanco
 - [x] Routing con parámetros (`/tareas/{FiltroEstado}`, `/tarea/{Id:int}`, `/editar-tarea/{Id:int}`)
       y navegación programática (`NavigationManager.NavigateTo`)
 - [x] `TareasState` como servicio Scoped con notificación reactiva (`event Action? OnChange`)
@@ -92,6 +94,8 @@ GestorTareasIntegrador/
 - [x] `TareaEntity` y `CategoriaEntity` con relación uno-a-muchos (Fluent API)
 - [x] Migraciones (a generar con `dotnet ef migrations add`) + datos de seed
 - [x] CRUD completo, paginación (`Skip`/`Take`) y búsqueda (`Contains` → `LIKE`)
+- [x] Re-validación del modelo en la capa de servicio (`Validator.TryValidateObject`) y clampeo
+      de página/tamaño en `ObtenerPaginado`
 - [x] Manejo de errores con `try/catch` + `AlertError` en la UI
 
 **Unidad 4 — Prácticas profesionales**

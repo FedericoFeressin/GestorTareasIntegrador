@@ -30,6 +30,7 @@ else
         <div class="col-12">
             <label class="form-label">Descripción</label>
             <InputTextArea @bind-Value="tarea!.Descripcion" class="form-control" rows="3" />
+            <ValidationMessage For="() => tarea!.Descripcion" />
         </div>
 
         <div class="col-md-4">

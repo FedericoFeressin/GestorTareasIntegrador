@@ -18,6 +18,7 @@ public class TareaEntity : IValidatableObject
     public string? Descripcion { get; set; }
 
     [Required(ErrorMessage = "Seleccione una prioridad")]
+    [RegularExpression("^(Alta|Media|Baja)$", ErrorMessage = "La prioridad debe ser Alta, Media o Baja.")]
     public string Prioridad { get; set; } = "Media";
 
     [Required(ErrorMessage = "La fecha de vencimiento es obligatoria")]
@@ -33,6 +34,13 @@ public class TareaEntity : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (string.IsNullOrWhiteSpace(Titulo))
+        {
+            yield return new ValidationResult(
+                "El título no puede contener solo espacios.",
+                new[] { nameof(Titulo) });
+        }
+
         if (Prioridad == "Alta" && FechaVencimiento.HasValue &&
             FechaVencimiento.Value.Date > DateTime.Today.AddDays(7))
         {

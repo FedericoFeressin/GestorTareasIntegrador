@@ -32,7 +32,7 @@
 
 | Archivo | Línea(s) clave | Concepto de cátedra |
 |---------|-----------------|---------------------|
-| `Models/TareaEntity.cs` | :9 `IValidatableObject`, :34 `Validate()` | Validación cruzada entre campos (Clase 7) |
+| `Models/TareaEntity.cs` | :9 `IValidatableObject`, :35 `Validate()` | Validación cruzada entre campos (Clase 7) |
 | `Components/Shared/TareaItem.razor` | :41 `[Parameter]`, :42-43 `EventCallback` | Parámetros y comunicación padre-hijo (Clase 6) |
 | `Components/Shared/Paginacion.razor` | :25-27 `[Parameter]`, :29 `OnCambio.InvokeAsync` | EventCallback para paginación (Clase 6) |
 | `Components/Shared/FiltroTareas.razor` | :24-28 `[Parameter]` + `Changed` | Two-way binding manual con EventCallback (Clase 6) |
@@ -53,12 +53,15 @@
 
 | Archivo | Línea(s) clave | Concepto de cátedra |
 |---------|-----------------|---------------------|
-| `Components/App.razor` | :7-8 Bootstrap CDN, :14 `blazor.web.js` | CDN de Bootstrap + framework JS (Clase 11) |
-| `Components/App.razor` | :15 Bootstrap JS bundle | JS Interop - menú hamburguesa (Clase 13) |
-| `Components/Layout/MainLayout.razor` | :1 `LayoutComponentBase`, :4 `header`, :8 `main`, :14 `footer` | HTML5 semántico + layout (Clase 9) |
-| `Components/Layout/NavMenu.razor` | :1 `navbar-dark bg-dark`, :5 `data-bs-toggle="collapse"` | Bootstrap navbar responsive (Clase 12) |
-| `wwwroot/css/app.css` | :1-6 `:root` variables CSS, :15 `body.dark-mode` | Variables CSS + modo oscuro (Clase 10) |
-| `wwwroot/css/app.css` | :38-131 Reglas dark-mode completas | Estilos globales para modo oscuro |
+| `Components/App.razor` | :7-8 Bootstrap CDN, :18 `blazor.web.js` | CDN de Bootstrap + framework JS (Clase 11) |
+| `Components/App.razor` | :9-11 Fuente Inter (Google Fonts), :17 Bootstrap JS bundle | Tipografía + JS Interop menú hamburguesa (Clase 13) |
+| `Components/Layout/MainLayout.razor` | :1 `LayoutComponentBase`, :4 `header`, :8 `main`, :9 `container-xl py-4`, :16 `footer` | HTML5 semántico + layout (Clase 9) |
+| `Components/Layout/MainLayout.razor` | :9 `container-xl` | Contenido centrado con ancho máximo (Clase 12) |
+| `Components/Layout/NavMenu.razor` | :1 `navbar navbar-primario`, :5 `data-bs-toggle="collapse"` | Bootstrap navbar responsive (Clase 12) |
+| `wwwroot/css/app.css` | :1-7 Variables CSS `:root` + paleta Índigo/Violeta | Variables CSS (Clase 10) |
+| `wwwroot/css/app.css` | :16-63 Sobrescrituras de Bootstrap (botones, paginación, links) | Personalización de tema (Clase 10) |
+| `wwwroot/css/app.css` | :65-69 `.navbar-primario` gradiente, :71-80 `h1`/`h2` con Inter | Navbar y tipografía (Clase 10) |
+| `wwwroot/css/app.css` | :82-211 Reglas `body.dark-mode` completas | Estilos globales para modo oscuro |
 | `Components/Shared/TareaItem.razor.css` | :1-26 | CSS Isolation (Clase 10) |
 | `Components/Shared/ConfirmDialog.razor.css` | :1-30 | CSS Isolation - modal puro HTML+CSS (Clase 10) |
 | `Components/Shared/EstadisticasBar.razor.css` | :1-19 | CSS Isolation - estadísticas (Clase 10) |
@@ -75,13 +78,15 @@
 | `Data/TareasDbContext.cs` | :23-27 `HasIndex` | Índices en columnas (Clase 15) |
 | `Data/TareasDbContext.cs` | :30-50 `HasData()` | Datos de seed (Clase 16) |
 | `Models/CategoriaEntity.cs` | :5-13 | Entidad secundaria con Data Annotations (Clase 15) |
-| `Models/TareaEntity.cs` | :9-50 | Entidad principal con validaciones (Clase 15) |
+| `Models/TareaEntity.cs` | :9-59 | Entidad principal con validaciones (Clase 15) |
 | `Program.cs` | :15-16 `AddDbContextFactory` + `UseSqlite` | Configuración de EF Core + SQLite (Clase 14) |
 | `Program.cs` | :45-64 Auto-migración al iniciar | Migraciones automáticas (Clase 16) |
 | `Services/ITareaService.cs` | :5-15 | Interfaz del servicio (Clase 17) |
 | `Services/TareaService.cs` | :9 `_factory`, :20 `CreateDbContextAsync` | Patrón DbContextFactory (Clase 14) |
-| `Services/TareaService.cs` | :93-131 `ObtenerPaginado` | Consulta con Skip/Take + Count (Clase 17) |
-| `Services/TareaService.cs` | :110-113 `Contains(busqueda)` | Búsqueda LIKE (Clase 17) |
+| `Services/TareaService.cs` | :96-105 `Validar` (TryValidateObject) | Validación en la capa de servicio (Clase 17) |
+| `Services/TareaService.cs` | :107-147 `ObtenerPaginado` | Consulta con Skip/Take + Count (Clase 17) |
+| `Services/TareaService.cs` | :109-110 Clampeo de página/tamaño | Robustez en parámetros de consulta (Clase 17) |
+| `Services/TareaService.cs` | :129 `Contains(busqueda)` | Búsqueda LIKE (Clase 17) |
 | `Services/CategoriaService.cs` | :7-17 | Servicio de solo lectura (Clase 17) |
 | `Migrations/` | (carpeta) | Migraciones generadas con dotnet-ef (Clase 16) |
 
@@ -135,7 +140,20 @@
 
 ## 6. Validaciones
 
-- **Data Annotations en `TareaEntity`:** `[Required]`, `[StringLength]`, `[DataType(DataType.Date)]`
-- **Validación cruzada (`IValidatableObject`):** Tareas de prioridad Alta deben vencer dentro
-  de 7 días; tareas pendientes no pueden tener fecha pasada
-- **En la UI:** `EditForm` + `DataAnnotationsValidator` + `ValidationMessage` en cada campo
+**Data Annotations en `TareaEntity`:** `[Required]`, `[StringLength]`,
+`[DataType(DataType.Date)]` y `[RegularExpression("^(Alta|Media|Baja)$")]` para `Prioridad`.
+
+**Validación cruzada (`IValidatableObject.Validate`, `TareaEntity.cs:35-58`):**
+- El título no puede contener solo espacios (`IsNullOrWhiteSpace`)
+- Tareas de prioridad Alta deben vencer dentro de los próximos 7 días
+- Tareas pendientes no pueden tener fecha de vencimiento en el pasado
+
+**En la UI:** `EditForm` + `DataAnnotationsValidator` + `ValidationMessage` en cada campo
+(incluida la Descripción en `EditarTarea`).
+
+**En la capa de servicio (`TareaService.cs:96-105`):** `Crear` y `Actualizar` re-validan el modelo
+con `Validator.TryValidateObject(..., validateAllProperties: true)` antes de guardar y lanzan
+`ArgumentException` si hay errores (defensa en profundidad).
+
+**Robustez en consultas (`TareaService.cs:109-110`):** la pagina se clampea a ≥ 1 y el tamaño se
+limita entre 1 y 100; `Skip`/`Take` nunca reciben valores inválidos.

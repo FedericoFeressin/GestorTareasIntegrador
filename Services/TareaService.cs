@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using GestorTareasIntegrador.Data;
 using GestorTareasIntegrador.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestorTareasIntegrador.Services;
 
@@ -36,6 +37,7 @@ public class TareaService : ITareaService
     {
         try
         {
+            Validar(tarea);
             await using var ctx = await _factory.CreateDbContextAsync();
             tarea.CreadaEn = DateTime.UtcNow;
             ctx.Tareas.Add(tarea);
@@ -54,6 +56,7 @@ public class TareaService : ITareaService
     {
         try
         {
+            Validar(tarea);
             await using var ctx = await _factory.CreateDbContextAsync();
             ctx.Tareas.Update(tarea);
             await ctx.SaveChangesAsync();
@@ -90,8 +93,22 @@ public class TareaService : ITareaService
         }
     }
 
+    private static void Validar(TareaEntity tarea)
+    {
+        var context = new ValidationContext(tarea);
+        var resultados = new List<ValidationResult>();
+        if (!Validator.TryValidateObject(tarea, context, resultados, validateAllProperties: true))
+        {
+            var mensaje = string.Join(" ", resultados.Select(r => r.ErrorMessage));
+            throw new ArgumentException($"La tarea no es válida: {mensaje}");
+        }
+    }
+
     public async Task<PagedResult<TareaEntity>> ObtenerPaginado(int pagina, int tamanioPagina, string? filtroEstado = null, string? filtroPrioridad = null, string? busqueda = null)
     {
+        pagina = Math.Max(1, pagina);
+        tamanioPagina = Math.Clamp(tamanioPagina, 1, 100);
+
         await using var ctx = await _factory.CreateDbContextAsync();
         var query = ctx.Tareas.Include(t => t.Categoria).AsNoTracking().AsQueryable();
 

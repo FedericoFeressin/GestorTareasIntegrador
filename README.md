@@ -11,8 +11,7 @@ materia: componentes Razor, interfaz visual con Bootstrap y JS Interop, persiste
 - **Estilos:** Bootstrap 5.3 (JS + CSS), Bootstrap Icons, CSS Isolation, variables CSS, paleta
   índigo/violeta personalizada, fuente Inter, modo oscuro
 - **JS Interop:** módulo ES6 (`wwwroot/js/interop.js`) para modo oscuro persistente, portapapeles
-  y notificaciones de tareas por vencer (campanita en la navbar con badge de conteo + avisos del
-  navegador activables con un clic)
+  y notificaciones de tareas por vencer
 - **CI:** GitHub Actions (`.github/workflows/dotnet.yml`)
 
 ## ⚠️ Nota importante sobre versiones (.NET 10 vs .NET 8)
@@ -60,7 +59,7 @@ GestorTareasIntegrador/
 │   ├── Layout/        (MainLayout, NavMenu)
 │   ├── Pages/          (Tareas, NuevaTarea, EditarTarea, TareaDetalle, Error)
 │   └── Shared/         (TareaItem, Paginacion, AlertError, ConfirmDialog,
-│                          EstadisticasBar, FiltroTareas, DarkModeToggle, CampanaNotificaciones)
+│                          EstadisticasBar, FiltroTareas, DarkModeToggle)
 ├── Data/               (TareasDbContext)
 ├── Models/             (TareaEntity, CategoriaEntity, PagedResult, EstadisticasDto)
 ├── Services/            (ITareaService/TareaService, ICategoriaService/CategoriaService)
@@ -74,9 +73,8 @@ GestorTareasIntegrador/
 ## Checklist de requisitos cubiertos
 
 **Unidad 1 — Componentes Blazor**
-- [x] 8 componentes reutilizables y encapsulados (`TareaItem`, `Paginacion`, `AlertError`,
-      `ConfirmDialog`, `EstadisticasBar`, `FiltroTareas`, `DarkModeToggle`,
-      `CampanaNotificaciones`)
+- [x] 7 componentes reutilizables y encapsulados (`TareaItem`, `Paginacion`, `AlertError`,
+      `ConfirmDialog`, `EstadisticasBar`, `FiltroTareas`, `DarkModeToggle`)
 - [x] `EditForm` + `DataAnnotationsValidator` + validación cruzada con `IValidatableObject`,
       validación con `RegularExpression` (prioridad Alta/Media/Baja y título sin espacios
       iniciales/finales)
@@ -90,8 +88,7 @@ GestorTareasIntegrador/
 - [x] Bootstrap 5 responsive, mobile-first (`col-12 col-lg-6 col-xxl-4`) + JS bundle para menú
       hamburguesa
 - [x] JS Interop con módulo ES6, `IJSObjectReference` y `DisposeAsync` (modo oscuro, portapapeles
-      y aviso de tareas que vencen en <24 hs: campanita en la navbar con desplegable y notificación
-      del navegador activable con un clic)
+      y notificaciones de tareas que vencen en <24 hs)
 - [x] Modal de confirmación sin JS de Bootstrap (HTML + CSS puro)
 - [x] Modo oscuro completo: headings, descripciones, botones, badges, paginación, labels, footer
 

@@ -20,8 +20,6 @@ public class TareasState
     public Task<PagedResult<TareaEntity>> CargarAsync(int pagina, int tamanio, string? estado, string? prioridad, string? busqueda)
         => _tareaService.ObtenerPaginado(pagina, tamanio, estado, prioridad, busqueda);
 
-    public Task<List<TareaEntity>> ObtenerTodasAsync() => _tareaService.ObtenerTodas();
-
     public async Task CrearAsync(TareaEntity tarea)
     {
         await _tareaService.Crear(tarea);

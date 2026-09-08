@@ -67,11 +67,9 @@
 | `Components/Shared/TareaItem.razor.css` | :1-26 | CSS Isolation (Clase 10) |
 | `Components/Shared/ConfirmDialog.razor.css` | :1-30 | CSS Isolation - modal puro HTML+CSS (Clase 10) |
 | `Components/Shared/EstadisticasBar.razor.css` | :1-19 | CSS Isolation - estadísticas (Clase 10) |
-| `wwwroot/js/interop.js` | :4-18 Funciones `aplicarModoOscuro`, `copiarAlPortapapeles` | JS Interop módulo ES6 (Clase 13) |
-| `wwwroot/js/interop.js` | :24-41 `mostrarNotificacion`, `solicitarPermisoNotificaciones`, `obtenerPermisoNotificaciones` | API de notificaciones del navegador (Clase 13) |
-| `Components/Shared/CampanaNotificaciones.razor` | :61-97 `OnInitializedAsync` + `RefrescarAsync` (filtro <24 hs) | Notificación de tareas que vencen <24 hs (Clase 13) |
-| `Components/Shared/CampanaNotificaciones.razor` | :110-125 `ActivarNotificaciones` (permiso con user gesture) | API `Notification` solicitando permiso desde un clic (Clase 13) |
-| `Components/Shared/CampanaNotificaciones.razor` | :3-4, :127-136 `IDisposable` + `IAsyncDisposable` | Ciclo de vida de suscripciones y referencias JS (Clases 5, 13) |
+| `wwwroot/js/interop.js` | :4-31 Funciones `aplicarModoOscuro`, `copiarAlPortapapeles`, `mostrarNotificacion` | JS Interop módulo ES6 (Clase 13) |
+| `wwwroot/js/interop.js` | :21-32 `mostrarNotificacion` + `Notification.requestPermission` | API de notificaciones del navegador (Clase 13) |
+| `Components/Pages/Tareas.razor` | :88, :160-182 `NotificarVencimientosProximos` | Notificación de tareas que vencen <24 hs (Clase 13) |
 | `Components/Shared/DarkModeToggle.razor` | :16 `InvokeAsync<IJSObjectReference>("import", ...)` | Carga dinámica de módulo JS (Clase 13) |
 | `Components/Pages/TareaDetalle.razor` | :50-58 `CopiarEnlace` + `Timer` autolimpieza | Invocación de función JS + UX (Clase 13) |
 
@@ -116,7 +114,7 @@
 
 | Patrón | Dónde | Archivo |
 |--------|-------|---------|
-| **Observer** | `TareasState.OnChange` se dispara y los componentes suscriptos reaccionan | `State/TareasState.cs:18`, `Components/Pages/Tareas.razor:64-66`, `Components/Shared/CampanaNotificaciones.razor:61-67` |
+| **Observer** | `TareasState.OnChange` se dispara y los componentes suscriptos reaccionan | `State/TareasState.cs:18`, `Components/Pages/Tareas.razor:66-68` |
 | **Service Layer** | Acceso a datos abstraído detrás de interfaces `ITareaService`/`ICategoriaService` | `Services/ITareaService.cs`, `Services/ICategoriaService.cs` |
 | **DbContextFactory** | Cada operación crea su propio `DbContext` (seguro para Blazor Server) | `Services/TareaService.cs:20,29,39,...` |
 | **Component Composition** | Páginas compuestas por componentes reutilizables con `@rendermode InteractiveServer` | `Components/Pages/Tareas.razor:9-41` |
@@ -141,18 +139,13 @@
   - `guardarPreferenciaOscura(activo)` — persiste en `localStorage`
   - `obtenerPreferenciaOscura()` — lee de `localStorage`
   - `copiarAlPortapapeles(texto)` — usa `navigator.clipboard.writeText()`
-  - `mostrarNotificacion(titulo, mensaje)` — API `Notification`: muestra SOLO si el permiso ya
-    es `granted`; nunca solicita permiso automáticamente (devuelve `false` si no hay soporte/permiso)
-  - `solicitarPermisoNotificaciones()` — `Notification.requestPermission()`: se invoca únicamente
-    desde un clic del usuario (user gesture), requisito de Edge/Brave/Chrome para no colgarse
-  - `obtenerPermisoNotificaciones()` — devuelve el estado del permiso (`granted`/`denied`/`default`)
-- **Notificaciones de vencimiento:** `CampanaNotificaciones.razor:69-97` calcula sobre **todas**
-  las tareas las pendientes con `FechaVencimiento <= DateTime.Now.AddHours(24)` y las lista en un
-  desplegable con badge de conteo (`NavMenu.razor:31`); si el permiso ya está concedido, notifica
-  una sola vez por sesión.
-- **Disposal:** Los componentes (`DarkModeToggle`, `TareaDetalle`, `CampanaNotificaciones`)
-  implementan `IAsyncDisposable`/`IDisposable` y llaman `_modulo.DisposeAsync()` con `try/catch`
-  para `JSDisconnectedException`
+  - `mostrarNotificacion(titulo, mensaje)` — API `Notification`: pide permiso la primera
+    vez, muestra la notificación si `granted`, devuelve `false` si no hay soporte o permiso
+- **Notificaciones de vencimiento:** `Tareas.razor:160` detecta las tareas pendientes cargadas con
+  `FechaVencimiento` de hoy o mañana y las notifica una vez por sesión
+- **Disposal:** Los componentes (`DarkModeToggle`, `TareaDetalle`, `Tareas`) implementan
+  `IAsyncDisposable`/`IDisposable` y llaman `_modulo.DisposeAsync()` con `try/catch` para
+  `JSDisconnectedException`
 
 ---
 

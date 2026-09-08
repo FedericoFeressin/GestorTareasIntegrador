@@ -2,35 +2,17 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
-## [0.10.0] - Campanita de notificaciones en la navbar
-### Agregado
-- Nuevo componente reutilizable `CampanaNotificaciones` (`Components/Shared/CampanaNotificaciones.razor`)
-  en la navbar: ícono `bi bi-bell` con **badge de conteo** y desplegable que lista las tareas
-  pendientes que vencen en **menos de 24 hs** (título + fecha/hora), calculadas sobre **todas** las
-  tareas (`TareasState.ObtenerTodasAsync`) y actualizadas con `OnChange` ante cada
-  crear/editar/eliminar/toggle.
-- Botón **"Activar notificaciones del navegador"** dentro del desplegable (visible solo si el
-  permiso está en `default`): solicita el permiso `Notification` **dentro de un clic** (user
-  gesture), que es la única forma que Edge/Brave/Chrome aceptan sin colgarse.
-- Funciones JS `solicitarPermisoNotificaciones()` y `obtenerPermisoNotificaciones()` en
-  `wwwroot/js/interop.js`.
+## [0.9.1] - Rollback de la campanita y fix del cuelgue de carga
+### Eliminado
+- Campanita de notificaciones de la navbar (componente `CampanaNotificaciones`), sus estilos y las
+  funciones auxiliares JS. Se vuelve a la solución **mínima que pide la consigna** (Clase 13, lab.
+  19): notificación del navegador para tareas que vencen en <24 hs disparada desde el listado.
 
 ### Arreglado
-- **Fallo de carga en Edge/Brave:** la notificación se disparaba dentro de `Cargar()` y
-  `Notification.requestPermission()` sin gesto del usuario podía quedarse colgado en un prompt
-  silencioso, dejando las tarjetas "cargando" para siempre. Ahora la página **nunca** espera por
-  las notificaciones: el aviso vive solo en la campanita y `mostrarNotificacion` solo actúa si el
-  permiso ya fue concedido.
-- El criterio de vencimiento pasó de "vence hoy o mañana sobre la página actual" a un cálculo real
-  de **menos de 24 hs** (`DateTime.Now.AddHours(24)`) evaluando todas las tareas, no solo las 6 de
-  la página visible.
-
-### Cambiado
-- La notificación nativa ahora se muestra **una sola vez por sesión** (direccionada desde la
-  campanita) y solo si el permiso ya está concedido; el primer pedido de permiso siempre lo hace el
-  usuario con el botón.
-- `Tareas.razor` ya no contiene lógica de notificaciones (`NotificarVencimientosProximos`,
-  `DisposeAsync`, `_modulo`): la página vuelve a un ciclo de carga simple y sin dependencias JS.
+- La notificación del navegador ya no bloquea la carga del listado: se dispara como tarea
+  no bloqueante después de pintar las tarjetas (`Tareas.razor` `Cargar`) y `mostrarNotificacion`
+  no queda esperando a `Notification.requestPermission()`, que en Edge/Brave podía dejar la página
+  "cargando" para siempre.
 
 ## [0.9.0] - Notificaciones de tareas por vencer
 ### Agregado

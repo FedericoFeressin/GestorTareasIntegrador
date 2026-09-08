@@ -214,3 +214,16 @@ body.dark-mode .list-unstyled li {
 
 /* Mobile-first: en pantallas chicas todo apila a una columna por defecto,
    Bootstrap Grid se encarga de expandir a 2-3 columnas en md/lg/xxl. */
+
+/* Botón hamburguesa: mayor contraste sobre el gradiente índigo */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, .45);
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, .15);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .3);
+}

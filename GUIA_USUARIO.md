@@ -24,7 +24,7 @@ Al ingresar se muestra el listado de tareas con:
 
 1. Click en **"+ Nueva tarea"** en la barra de navegación.
 2. Completar el formulario:
-   - **Título** (obligatorio, 3-100 caracteres)
+   - **Título** (obligatorio, 3-100 caracteres, sin espacios al inicio ni al final)
    - **Descripción** (opcional, máx. 500 caracteres)
    - **Prioridad** (Alta / Media / Baja)
    - **Fecha de vencimiento** (obligatoria, no puede ser en el pasado para tareas pendientes)
@@ -67,7 +67,14 @@ Click en el ícono de luna/soleado (esquina superior derecha del navbar) para al
 entre tema claro y oscuro. La preferencia se guarda automáticamente en `localStorage`
 y persiste al recargar la página.
 
-## 10. Navegación desde mobile
+## 10. Notificaciones de tareas por vencer
+
+Al entrar al listado, si hay tareas pendientes que vencen hoy o mañana (< 24 hs), el
+navegador pedirá permiso la primera vez y mostrará una notificación con el título y la
+fecha de vencimiento. Solo se notifica una vez por visita; no vuelve a molestar al
+cambiar de página o aplicar filtros.
+
+## 11. Navegación desde mobile
 
 En pantallas chicas, el menú de navegación se colapsa detrás de un botón hamburguesa.
 Tocar el ícono para expandir las opciones.

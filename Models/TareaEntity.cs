@@ -12,6 +12,7 @@ public class TareaEntity : IValidatableObject
 
     [Required(ErrorMessage = "El título es obligatorio")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Debe tener entre 3 y 100 caracteres")]
+    [RegularExpression(@"^\S(?:.*\S)?$", ErrorMessage = "El título no puede comenzar ni terminar con espacios")]
     public string Titulo { get; set; } = string.Empty;
 
     [StringLength(500, ErrorMessage = "La descripción no puede superar los 500 caracteres")]

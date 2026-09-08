@@ -32,7 +32,7 @@
 
 | Archivo | Línea(s) clave | Concepto de cátedra |
 |---------|-----------------|---------------------|
-| `Models/TareaEntity.cs` | :9 `IValidatableObject`, :35 `Validate()` | Validación cruzada entre campos (Clase 7) |
+| `Models/TareaEntity.cs` | :9 `IValidatableObject`, :36 `Validate()` | Validación cruzada entre campos (Clase 7) |
 | `Components/Shared/TareaItem.razor` | :41 `[Parameter]`, :42-43 `EventCallback` | Parámetros y comunicación padre-hijo (Clase 6) |
 | `Components/Shared/Paginacion.razor` | :25-27 `[Parameter]`, :29 `OnCambio.InvokeAsync` | EventCallback para paginación (Clase 6) |
 | `Components/Shared/FiltroTareas.razor` | :24-28 `[Parameter]` + `Changed` | Two-way binding manual con EventCallback (Clase 6) |
@@ -61,11 +61,15 @@
 | `wwwroot/css/app.css` | :1-7 Variables CSS `:root` + paleta Índigo/Violeta | Variables CSS (Clase 10) |
 | `wwwroot/css/app.css` | :16-63 Sobrescrituras de Bootstrap (botones, paginación, links) | Personalización de tema (Clase 10) |
 | `wwwroot/css/app.css` | :65-69 `.navbar-primario` gradiente, :71-80 `h1`/`h2` con Inter | Navbar y tipografía (Clase 10) |
+| `wwwroot/css/app.css` | :218-229 `.navbar-toggler` (borde, hover, foco) | Botón hamburguesa con contraste (Clase 12) |
+| `Components/Pages/NuevaTarea.razor` | :52-57 `flex-column flex-sm-row` | Botones apilados en mobile (Clase 12) |
 | `wwwroot/css/app.css` | :82-211 Reglas `body.dark-mode` completas | Estilos globales para modo oscuro |
 | `Components/Shared/TareaItem.razor.css` | :1-26 | CSS Isolation (Clase 10) |
 | `Components/Shared/ConfirmDialog.razor.css` | :1-30 | CSS Isolation - modal puro HTML+CSS (Clase 10) |
 | `Components/Shared/EstadisticasBar.razor.css` | :1-19 | CSS Isolation - estadísticas (Clase 10) |
-| `wwwroot/js/interop.js` | :4-16 Funciones `aplicarModoOscuro`, `copiarAlPortapapeles` | JS Interop módulo ES6 (Clase 13) |
+| `wwwroot/js/interop.js` | :4-31 Funciones `aplicarModoOscuro`, `copiarAlPortapapeles`, `mostrarNotificacion` | JS Interop módulo ES6 (Clase 13) |
+| `wwwroot/js/interop.js` | :21-32 `mostrarNotificacion` + `Notification.requestPermission` | API de notificaciones del navegador (Clase 13) |
+| `Components/Pages/Tareas.razor` | :88, :160-182 `NotificarVencimientosProximos` | Notificación de tareas que vencen <24 hs (Clase 13) |
 | `Components/Shared/DarkModeToggle.razor` | :16 `InvokeAsync<IJSObjectReference>("import", ...)` | Carga dinámica de módulo JS (Clase 13) |
 | `Components/Pages/TareaDetalle.razor` | :50-58 `CopiarEnlace` + `Timer` autolimpieza | Invocación de función JS + UX (Clase 13) |
 
@@ -78,10 +82,11 @@
 | `Data/TareasDbContext.cs` | :23-27 `HasIndex` | Índices en columnas (Clase 15) |
 | `Data/TareasDbContext.cs` | :30-50 `HasData()` | Datos de seed (Clase 16) |
 | `Models/CategoriaEntity.cs` | :5-13 | Entidad secundaria con Data Annotations (Clase 15) |
-| `Models/TareaEntity.cs` | :9-59 | Entidad principal con validaciones (Clase 15) |
+| `Models/TareaEntity.cs` | :9-60 | Entidad principal con validaciones (Clase 15) |
 | `Program.cs` | :15-16 `AddDbContextFactory` + `UseSqlite` | Configuración de EF Core + SQLite (Clase 14) |
 | `Program.cs` | :45-64 Auto-migración al iniciar | Migraciones automáticas (Clase 16) |
-| `Services/ITareaService.cs` | :5-15 | Interfaz del servicio (Clase 17) |
+| `Services/ITareaService.cs` | :9-54 | Interfaz del servicio con XML docs (Clase 17, 21) |
+| `Services/ICategoriaService.cs` | :8-13 | Interfaz del servicio de categorías con XML docs (Clase 17) |
 | `Services/TareaService.cs` | :9 `_factory`, :20 `CreateDbContextAsync` | Patrón DbContextFactory (Clase 14) |
 | `Services/TareaService.cs` | :96-105 `Validar` (TryValidateObject) | Validación en la capa de servicio (Clase 17) |
 | `Services/TareaService.cs` | :107-147 `ObtenerPaginado` | Consulta con Skip/Take + Count (Clase 17) |
@@ -98,6 +103,8 @@
 | `.gitignore` | (raíz) | Ignorar archivos de build/bin (Clase 19) |
 | `README.md` | (raíz) | Documentación profesional (Clase 21) |
 | `CHANGELOG.md` | (raíz) | Historial de versiones (Clase 21) |
+| `Services/ITareaService.cs` | :9-54 `<summary>/<param>/<returns>` | XML docs de API (Clase 21) |
+| `README.md` | Flujo Git Git Flow + Conventional Commits | Control de versiones (Clase 19) |
 | `appsettings.json` | :2-4 ConnectionStrings | Configuración por entorno (Clase 22) |
 | `appsettings.Development.json` | :2-4 | Configuración separada para dev (Clase 22) |
 
@@ -132,8 +139,12 @@
   - `guardarPreferenciaOscura(activo)` — persiste en `localStorage`
   - `obtenerPreferenciaOscura()` — lee de `localStorage`
   - `copiarAlPortapapeles(texto)` — usa `navigator.clipboard.writeText()`
-- **Disposal:** Ambos componentes (`DarkModeToggle`, `TareaDetalle`) implementan
-  `IAsyncDisposable` y llaman `_modulo.DisposeAsync()` con `try/catch` para
+  - `mostrarNotificacion(titulo, mensaje)` — API `Notification`: pide permiso la primera
+    vez, muestra la notificación si `granted`, devuelve `false` si no hay soporte o permiso
+- **Notificaciones de vencimiento:** `Tareas.razor:160` detecta las tareas pendientes cargadas con
+  `FechaVencimiento` de hoy o mañana y las notifica una vez por sesión
+- **Disposal:** Los componentes (`DarkModeToggle`, `TareaDetalle`, `Tareas`) implementan
+  `IAsyncDisposable`/`IDisposable` y llaman `_modulo.DisposeAsync()` con `try/catch` para
   `JSDisconnectedException`
 
 ---
@@ -141,9 +152,11 @@
 ## 6. Validaciones
 
 **Data Annotations en `TareaEntity`:** `[Required]`, `[StringLength]`,
-`[DataType(DataType.Date)]` y `[RegularExpression("^(Alta|Media|Baja)$")]` para `Prioridad`.
+`[DataType(DataType.Date)]` y `[RegularExpression]`:
+- `Titulo` con `^\S(?:.*\S)?$` — no puede comenzar ni terminar con espacios (`TareaEntity.cs:15`)
+- `Prioridad` con `^(Alta|Media|Baja)$` (`TareaEntity.cs:22`)
 
-**Validación cruzada (`IValidatableObject.Validate`, `TareaEntity.cs:35-58`):**
+**Validación cruzada (`IValidatableObject.Validate`, `TareaEntity.cs:36-59`):**
 - El título no puede contener solo espacios (`IsNullOrWhiteSpace`)
 - Tareas de prioridad Alta deben vencer dentro de los próximos 7 días
 - Tareas pendientes no pueden tener fecha de vencimiento en el pasado

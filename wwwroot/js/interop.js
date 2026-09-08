@@ -16,3 +16,17 @@ export function obtenerPreferenciaOscura() {
 export function copiarAlPortapapeles(texto) {
     return navigator.clipboard.writeText(texto);
 }
+
+// Notificación del navegador (Unidad 2, Clase 13 - tareas que vencen en <24 hs).
+export async function mostrarNotificacion(titulo, mensaje) {
+    if (!('Notification' in window)) return false;
+    let permiso = Notification.permission;
+    if (permiso === 'default') {
+        permiso = await Notification.requestPermission();
+    }
+    if (permiso === 'granted') {
+        new Notification(titulo, { body: mensaje });
+        return true;
+    }
+    return false;
+}

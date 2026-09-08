@@ -2,12 +2,38 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [0.9.0] - Notificaciones de tareas por vencer
+### Agregado
+- Notificaciones del navegador (API `Notification`) para tareas pendientes que vencen en
+  menos de 24 hs (hoy o mañana), según el requisito de la Unidad 2 (Clase 13, lab. 19).
+- Nueva función `mostrarNotificacion(titulo, mensaje)` en `wwwroot/js/interop.js:21` que
+  solicita permiso la primera vez y muestra la notificación si está concedido.
+- El listado (`Tareas.razor:160`) evalúa las tareas cargadas y avisa **una sola vez por sesión**
+  (`notificacionesMostradas`), sin interrumpir la carga. El módulo ES6 se libera con
+  `DisposeAsync` ante `JSDisconnectedException`.
+
+### Documentación
+- XML docs (`<summary>`, `<param>`, `<returns>`, `<exception>`) en `ITareaService.cs` y
+  `ICategoriaService.cs` (objetivo de la Clase 21).
+- README con sección de **Conventional Commits** y Git Flow (tipos `feat/fix/docs/...` y ramas
+  `main/develop/feature/hotfix`).
+
+## [0.8.0] - Pulido responsive y contraste del navbar
+### Arreglado
+- Botones "Guardar/Cancelar" y "Guardar cambios/Cancelar" ahora apilan en ancho completo en
+  mobile (`flex-column flex-sm-row`) en `NuevaTarea` y `EditarTarea`: ya no quedan apretados
+  en pantallas chicas.
+- Botón hamburguesa del navbar con más contraste sobre el gradiente índigo: borde translúcido
+  claro, fondo al hover y halo de foco (`app.css` `.navbar-toggler`).
+
 ## [0.7.0] - Validaciones de backend reforzadas
 ### Agregado
 - Regla `[RegularExpression("^(Alta|Media|Baja)$")]` en `TareaEntity.Prioridad`: cualquier valor
-  distinto a Alta/Media/Baja se rechaza con mensaje claro (`TareaEntity.cs:21`).
+  distinto a Alta/Media/Baja se rechaza con mensaje claro (`TareaEntity.cs:22`).
+- Regla `[RegularExpression(@"^\S(?:.*\S)?$")]` en `TareaEntity.Titulo`: el título no puede
+  comenzar ni terminar con espacios (`TareaEntity.cs:15`).
 - Validación de título con solo espacios en `Validate()`: `"   "` ya no pasa el `[Required]`
-  (`TareaEntity.cs:37-42`).
+  (`TareaEntity.cs:38-43`).
 - Re-validación del modelo en la capa de servicio: `Crear` y `Actualizar` llaman a un `Validar()`
   privado que usa `Validator.TryValidateObject` y lanza `ArgumentException` si el modelo es inválido
   (defensa en profundidad, `TareaService.cs:96-105`).

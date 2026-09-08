@@ -10,7 +10,8 @@ materia: componentes Razor, interfaz visual con Bootstrap y JS Interop, persiste
 - **Backend/Datos:** Entity Framework Core 10, SQLite, patrón `IDbContextFactory`
 - **Estilos:** Bootstrap 5.3 (JS + CSS), Bootstrap Icons, CSS Isolation, variables CSS, paleta
   índigo/violeta personalizada, fuente Inter, modo oscuro
-- **JS Interop:** módulo ES6 (`wwwroot/js/interop.js`) para modo oscuro persistente y portapapeles
+- **JS Interop:** módulo ES6 (`wwwroot/js/interop.js`) para modo oscuro persistente, portapapeles
+  y notificaciones de tareas por vencer
 - **CI:** GitHub Actions (`.github/workflows/dotnet.yml`)
 
 ## ⚠️ Nota importante sobre versiones (.NET 10 vs .NET 8)
@@ -75,7 +76,8 @@ GestorTareasIntegrador/
 - [x] 7 componentes reutilizables y encapsulados (`TareaItem`, `Paginacion`, `AlertError`,
       `ConfirmDialog`, `EstadisticasBar`, `FiltroTareas`, `DarkModeToggle`)
 - [x] `EditForm` + `DataAnnotationsValidator` + validación cruzada con `IValidatableObject`,
-      prioridad validada con `RegularExpression` y título sin espacios en blanco
+      validación con `RegularExpression` (prioridad Alta/Media/Baja y título sin espacios
+      iniciales/finales)
 - [x] Routing con parámetros (`/tareas/{FiltroEstado}`, `/tarea/{Id:int}`, `/editar-tarea/{Id:int}`)
       y navegación programática (`NavigationManager.NavigateTo`)
 - [x] `TareasState` como servicio Scoped con notificación reactiva (`event Action? OnChange`)
@@ -85,7 +87,8 @@ GestorTareasIntegrador/
 - [x] CSS Isolation en `TareaItem.razor.css`, `ConfirmDialog.razor.css`, `EstadisticasBar.razor.css`
 - [x] Bootstrap 5 responsive, mobile-first (`col-12 col-lg-6 col-xxl-4`) + JS bundle para menú
       hamburguesa
-- [x] JS Interop con módulo ES6, `IJSObjectReference` y `DisposeAsync` (modo oscuro + portapapeles)
+- [x] JS Interop con módulo ES6, `IJSObjectReference` y `DisposeAsync` (modo oscuro, portapapeles
+      y notificaciones de tareas que vencen en <24 hs)
 - [x] Modal de confirmación sin JS de Bootstrap (HTML + CSS puro)
 - [x] Modo oscuro completo: headings, descripciones, botones, badges, paginación, labels, footer
 
@@ -106,19 +109,35 @@ GestorTareasIntegrador/
 - [ ] Deploy a Azure App Service (paso manual: crear el App Service, agregar el secret
       `AZURE_WEBAPP_PUBLISH_PROFILE` y descomentar el step de deploy en el workflow)
 
-## Flujo de trabajo Git sugerido
+## Flujo de trabajo Git sugerido (Git Flow + Conventional Commits)
 
 ```bash
 git init
-git add .
-git commit -m "feat: proyecto Blazor integrador con EF Core y SQLite"
 git branch -M main
 git remote add origin https://github.com/tu-usuario/gestor-tareas-integrador.git
-git push -u origin main
 
-git checkout -b feature/nueva-funcionalidad
+git checkout -b feature/validaciones-avanzadas
 # ... cambios ...
-git commit -m "feat: descripción del cambio"
-git push origin feature/nueva-funcionalidad
-# Abrir Pull Request en GitHub y hacer merge
+git add .
+git commit -m "feat(validaciones): agregar regex de prioridad y validación en servicio"
+git push origin feature/validaciones-avanzadas
+# Abrir Pull Request en GitHub, revisión y merge
+git checkout main
+git pull
+git branch -d feature/validaciones-avanzadas
 ```
+
+### Convención de commits (Conventional Commits, Clase 19)
+
+| Tipo | Uso | Ejemplo |
+|------|-----|---------|
+| `feat` | Nueva funcionalidad | `feat: agregar notificaciones de tareas por vencer` |
+| `fix` | Corrección de bug | `fix: menú hamburguesa en mobile` |
+| `docs` | Solo documentación | `docs: actualizar GUIA_TECNICA` |
+| `refactor` | Refactorización sin cambio de comportamiento | `refactor: extraer Validar() en TareaService` |
+| `style` | Formato, sin cambio lógico | `style: estandarizar headings` |
+| `test` | Agregar/corregir tests | `test: cubrir ObtenerPaginado` |
+| `chore` | Dependencias, build | `chore: actualizar EF Core` |
+
+Formato: `tipo(alcance): descripción imperativa`. Ramas: `main` (producción),
+`develop` (integración), `feature/*`, `hotfix/*`.

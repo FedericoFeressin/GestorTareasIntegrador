@@ -2,8 +2,6 @@
 @page "/tareas"
 @page "/tareas/{FiltroEstado}"
 @implements IDisposable
-@implements IAsyncDisposable
-@inject IJSRuntime JS
 @inject TareasState State
 
 <h1>Listado de Tareas</h1>
@@ -62,8 +60,6 @@ else if (resultado is not null)
     private const int TamanioPagina = 6;
     private bool mostrarConfirmacion;
     private int? idPendienteEliminar;
-    private IJSObjectReference? _modulo;
-    private bool notificacionesMostradas;
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,7 +81,6 @@ else if (resultado is not null)
         {
             resultado = await State.CargarAsync(pagina, TamanioPagina, FiltroEstado, filtroPrioridad, busqueda);
             estadisticas = await State.ObtenerEstadisticasAsync();
-            await NotificarVencimientosProximos();
         }
         catch (Exception ex)
         {
@@ -154,39 +149,4 @@ else if (resultado is not null)
     }
 
     public void Dispose() => State.OnChange -= AlCambiarEstado;
-
-    // Notificaciones HTML5: avisa una sola vez por sesión si hay tareas
-    // pendientes que vencen hoy o mañana (< 24 hs).
-    private async Task NotificarVencimientosProximos()
-    {
-        if (notificacionesMostradas || resultado is null) return;
-        notificacionesMostradas = true;
-
-        var proximas = resultado.Items
-            .Where(t => !t.Completada && t.FechaVencimiento.HasValue &&
-                        t.FechaVencimiento.Value.Date <= DateTime.Today.AddDays(1));
-
-        if (!proximas.Any()) return;
-
-        try
-        {
-            _modulo ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
-            foreach (var t in proximas)
-            {
-                await _modulo.InvokeVoidAsync("mostrarNotificacion",
-                    "Tarea por vencer",
-                    $"{t.Titulo} vence el {t.FechaVencimiento!.Value:dd/MM/yyyy}.");
-            }
-        }
-        catch (JSDisconnectedException) { }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_modulo is not null)
-        {
-            try { await _modulo.DisposeAsync(); }
-            catch (JSDisconnectedException) { }
-        }
-    }
 }

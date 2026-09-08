@@ -1,0 +1,137 @@
+@inject IJSRuntime JS
+@inject TareasState State
+@implements IDisposable
+@implements IAsyncDisposable
+
+<div class="position-relative campana">
+    <button class="btn btn-outline-light btn-sm position-relative" @onclick="Alternar"
+            @onclick:stopPropagation="true" aria-expanded="abierto"
+            title="Tareas que vencen en menos de 24 hs" aria-label="Notificaciones de tareas por vencer">
+        <i class="bi bi-bell"></i>
+        @if (proximas.Count > 0)
+        {
+            <span class="badge bg-danger campana-badge" aria-label="@proximas.Count tarea(s) por vencer">@proximas.Count</span>
+        }
+    </button>
+
+    @if (abierto)
+    {
+        <div class="campana-panel">
+            <div class="campana-panel-header">
+                <span class="fw-bold">Vencen en menos de 24 hs</span>
+            </div>
+
+            @if (proximas.Count == 0)
+            {
+                <p class="campana-vacia text-muted mb-0">No hay tareas por vencer.</p>
+            }
+            else
+            {
+                <ul class="list-unstyled mb-0 campana-lista">
+                    @foreach (var t in proximas)
+                    {
+                        <li>
+                            <a href="/tarea/@t.Id">@t.Titulo</a>
+                            <span class="text-muted d-block small">
+                                Vence @t.FechaVencimiento!.Value.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+
+            @if (permisoNotif == "default")
+            {
+                <button class="btn btn-sm btn-primary w-100 mt-2" @onclick="ActivarNotificaciones"
+                        @onclick:stopPropagation="true">
+                    <i class="bi bi-bell-fill"></i> Activar notificaciones del navegador
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<TareaEntity> proximas = new();
+    private bool abierto;
+    private bool notificacionMostrada;
+    private string permisoNotif = "default";
+    private IJSObjectReference? _modulo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.OnChange += Refrescar;
+        await RefrescarAsync();
+    }
+
+    private void Refrescar() => _ = RefrescarAsync();
+
+    private async Task RefrescarAsync()
+    {
+        try
+        {
+            var todas = await State.ObtenerTodasAsync();
+            var limite = DateTime.Now.AddHours(24);
+            proximas = todas
+                .Where(t => !t.Completada && t.FechaVencimiento.HasValue && t.FechaVencimiento.Value <= limite)
+                .OrderBy(t => t.FechaVencimiento)
+                .ToList();
+
+            _modulo ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
+            permisoNotif = await _modulo.InvokeAsync<string>("obtenerPermisoNotificaciones");
+
+            if (!notificacionMostrada && proximas.Count > 0 && permisoNotif == "granted")
+            {
+                notificacionMostrada = true;
+                foreach (var t in proximas)
+                {
+                    await _modulo.InvokeVoidAsync("mostrarNotificacion",
+                        "Tarea por vencer",
+                        $"{t.Titulo} vence el {t.FechaVencimiento!.Value:dd/MM/yyyy HH:mm}.");
+                }
+            }
+        }
+        catch (JSDisconnectedException) { }
+
+        StateHasChanged();
+    }
+
+    private async Task Alternar()
+    {
+        abierto = !abierto;
+        if (abierto)
+        {
+            _modulo ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
+            permisoNotif = await _modulo.InvokeAsync<string>("obtenerPermisoNotificaciones");
+            StateHasChanged();
+        }
+    }
+
+    private async Task ActivarNotificaciones()
+    {
+        try
+        {
+            _modulo ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/interop.js");
+            var concedido = await _modulo.InvokeAsync<bool>("solicitarPermisoNotificaciones");
+            permisoNotif = concedido ? "granted" : permisoNotif;
+            if (concedido)
+            {
+                notificacionMostrada = false;
+                await RefrescarAsync();
+            }
+            StateHasChanged();
+        }
+        catch (JSDisconnectedException) { }
+    }
+
+    public void Dispose() => State.OnChange -= Refrescar;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_modulo is not null)
+        {
+            try { await _modulo.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+    }
+}

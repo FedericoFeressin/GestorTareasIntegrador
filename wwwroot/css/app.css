@@ -227,3 +227,64 @@ body.dark-mode .list-unstyled li {
 .navbar-toggler:focus {
     box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .3);
 }
+
+/* Campanita de notificaciones (vencimientos en menos de 24 hs) */
+.campana-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    font-size: .65rem;
+}
+
+.campana-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    z-index: 1060;
+    width: 300px;
+    max-height: 340px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: var(--radio-borde);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+    padding: .75rem;
+}
+
+.campana-panel-header {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: .5rem;
+    margin-bottom: .5rem;
+    font-size: .9rem;
+}
+
+.campana-lista li {
+    padding: .4rem .25rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.campana-lista li:last-child {
+    border-bottom: none;
+}
+
+.campana-vacia {
+    font-size: .9rem;
+}
+
+body.dark-mode .campana-panel {
+    background-color: #28253d;
+    border-color: #3a3657;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+}
+
+body.dark-mode .campana-panel-header {
+    border-color: #3a3657;
+}
+
+body.dark-mode .campana-lista li {
+    border-color: #3a3657;
+}
+
+body.dark-mode .campana-lista a {
+    color: #a5b4fc;
+}

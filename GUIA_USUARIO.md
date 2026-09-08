@@ -69,10 +69,24 @@ y persiste al recargar la página.
 
 ## 10. Notificaciones de tareas por vencer
 
-Al entrar al listado, si hay tareas pendientes que vencen hoy o mañana (< 24 hs), el
-navegador pedirá permiso la primera vez y mostrará una notificación con el título y la
-fecha de vencimiento. Solo se notifica una vez por visita; no vuelve a molestar al
-cambiar de página o aplicar filtros.
+En la barra de navegación hay una **campanita** con un contador rojo con la cantidad de tareas
+pendientes que vencen en menos de 24 hs. Al clickearla se despliega el listado con el título y la
+fecha/hora de vencimiento de cada una; clickeando una tarea vas a su detalle.
+
+Si querés que además aparezca una **notificación del navegador** (aviso del sistema incluso con la
+pestaña en segundo plano):
+
+1. Abrí la campanita.
+2. Click en **"Activar notificaciones del navegador"**.
+3. Aceptá el permiso en el aviso del navegador.
+
+Una vez activado, cada vez que haya tareas por vencer se mostrará un aviso *"Tarea por vencer"*
+(una sola vez por sesión). El permiso se pide solo con ese clic: la aplicación nunca lo solicita
+automáticamente al cargar una página, así que las tarjetas cargan siempre al instante.
+
+> Sugerencia: si el navegador nunca muestra el pedido de permiso, buscá el ícono de campana en la
+> barra de direcciones (Edge/Brave/Chrome suelen habilitarlo ahí) o verificá que las notificaciones
+> del sitio no estén bloqueadas en los ajustes.
 
 ## 11. Navegación desde mobile
 
